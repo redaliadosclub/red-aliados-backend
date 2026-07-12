@@ -17,8 +17,8 @@ app.get('/', (req, res) => {
     res.send('✅ Backend Red Aliados funcionando');
 });
 
-app.get('/create_preference', async (req, res) => {
-
+app.post('/create_preference', async (req, res) => {
+const { title, unit_price, campaignId, userId } = req.body;
     try {
 
         const preference = new Preference(client);
@@ -27,13 +27,18 @@ const result = await preference.create({
 
     body: {
 
-        items: [
-            {
-                title: 'Participación Red Aliados',
-                quantity: 1,
-                unit_price: 100
-            }
-        ],
+ items: [
+    {
+        title: title,
+        quantity: 1,
+        unit_price: Number(unit_price)
+    }
+],
+
+external_reference: JSON.stringify({
+    campaignId,
+    userId
+}),
 
         back_urls: {
             success: "http://localhost:5173/payment/success",
@@ -45,7 +50,9 @@ const result = await preference.create({
 
 });
 
-        res.redirect(result.init_point);
+        res.json({
+    init_point: result.init_point
+});
 
     } catch (error) {
 
