@@ -22,27 +22,26 @@ app.post('/create_preference', async (req, res) => {
     const { title, unit_price, campaignId, userId } = req.body;
 
     console.log(req.body);
-    
+
     try {
 
         const preference = new Preference(client);
 
 const result = await preference.create({
-
     body: {
 
- items: [
-    {
-        title: title,
-        quantity: 1,
-        unit_price: Number(unit_price)
-    }
-],
+        items: [
+            {
+                title: title,
+                quantity: 1,
+                unit_price: Number(unit_price)
+            }
+        ],
 
-external_reference: JSON.stringify({
-    campaignId,
-    userId
-}),
+        external_reference: JSON.stringify({
+            campaignId,
+            userId
+        }),
 
         back_urls: {
             success: "http://localhost:5173/payment/success",
@@ -50,21 +49,36 @@ external_reference: JSON.stringify({
             pending: "http://localhost:5173/payment/pending"
         },
 
-    }
+        auto_return: "approved"
 
+    }
 });
 
-        res.json({
+res.json({
     init_point: result.init_point
 });
 
-    } catch (error) {
+} catch (error) {
 
-        console.log(error);
+    console.log(error);
 
-        res.status(500).json(error);
+    res.status(500).json(error);
 
-    }
+}
+
+});
+
+// =========================
+// WEBHOOK MERCADO PAGO
+// =========================
+
+app.post('/webhook', async (req, res) => {
+
+    console.log('=== WEBHOOK MP ===');
+
+    console.log(req.body);
+
+    res.sendStatus(200);
 
 });
 
@@ -74,4 +88,4 @@ app.listen(PORT, () => {
 
     console.log(`🚀 Servidor iniciado en puerto ${PORT}`);
 
-})
+});
