@@ -18,7 +18,11 @@ app.get('/', (req, res) => {
 });
 
 app.post('/create_preference', async (req, res) => {
-const { title, unit_price, campaignId, userId } = req.body;
+
+    const { title, unit_price, campaignId, userId } = req.body;
+
+    console.log(req.body);
+    
     try {
 
         const preference = new Preference(client);
