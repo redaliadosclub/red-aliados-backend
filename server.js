@@ -53,8 +53,6 @@ const result = await preference.create({
             pending: "http://localhost:5173/payment/pending"
         },
 
-        auto_return: "approved"
-
     }
 });
 
