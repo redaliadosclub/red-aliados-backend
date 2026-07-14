@@ -2,7 +2,11 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const { MercadoPagoConfig, Preference } = require('mercadopago');
+const {
+    MercadoPagoConfig,
+    Preference,
+    Payment
+} = require('mercadopago');
 
 const app = express();
 
@@ -78,7 +82,31 @@ app.post('/webhook', async (req, res) => {
 
     console.log(req.body);
 
-    res.sendStatus(200);
+    try {
+
+        const paymentId = req.body.data?.id;
+
+        if (!paymentId) {
+            return res.sendStatus(200);
+        }
+
+        const payment = new Payment(client);
+
+        const result = await payment.get({
+            id: paymentId
+        });
+
+        console.log('Estado del pago:', result.status);
+
+        res.sendStatus(200);
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.sendStatus(500);
+
+    }
 
 });
 
